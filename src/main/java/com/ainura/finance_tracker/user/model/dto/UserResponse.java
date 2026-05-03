@@ -4,7 +4,7 @@ import com.ainura.finance_tracker.user.model.enums.UserRole;
 import lombok.Data;
 
 @Data
-public class UserCreateResponse {
+public class UserResponse {
     private Long id;
     private String firstName;
     private String lastName;
