@@ -1,12 +1,8 @@
 package com.ainura.finance_tracker.user.controller;
 
 import com.ainura.finance_tracker.user.model.dto.RegisterRequest;
-import com.ainura.finance_tracker.user.model.dto.UserCreateRequest;
-import com.ainura.finance_tracker.user.model.dto.UserCreateResponse;
-import com.ainura.finance_tracker.user.model.entity.User;
-import com.ainura.finance_tracker.user.repository.UserRepository;
+import com.ainura.finance_tracker.user.model.dto.UserResponse;
 import com.ainura.finance_tracker.user.service.UserService;
-import com.ainura.finance_tracker.user.service.impl.UserServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,7 +18,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public UserCreateResponse registerUser(@Valid @RequestBody RegisterRequest request) {
+    public UserResponse registerUser(@Valid @RequestBody RegisterRequest request) {
        return userService.registerUser(request);
     }
 }
