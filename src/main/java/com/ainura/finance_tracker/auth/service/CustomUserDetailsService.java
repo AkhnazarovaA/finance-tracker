@@ -1,6 +1,5 @@
-package com.ainura.finance_tracker.user.auth.service;
+package com.ainura.finance_tracker.auth.service;
 
-import com.ainura.finance_tracker.exception.UserException;
 import com.ainura.finance_tracker.user.model.entity.UserEntity;
 import com.ainura.finance_tracker.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,14 +12,15 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class CustomUserDetailService implements UserDetailsService {
+public class CustomUserDetailsService implements UserDetailsService {
 
-    private UserRepository repository;
+    private final UserRepository repository;
+
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         UserEntity userEntity = repository.findByEmail(email)
-                .orElseThrow(() -> new UserException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         return User.builder()
                 .username(userEntity.getEmail())

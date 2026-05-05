@@ -9,6 +9,7 @@ import com.ainura.finance_tracker.user.model.enums.UserRole;
 import com.ainura.finance_tracker.user.repository.UserRepository;
 import com.ainura.finance_tracker.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
