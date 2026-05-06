@@ -34,6 +34,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
+    //TODO return here record not entity
     public List<Transaction> findAllByOrderByIdAsc() {
         return transactionRepository.findAllByOrderByIdAsc();
     }

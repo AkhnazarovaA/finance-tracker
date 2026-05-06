@@ -1,10 +1,10 @@
 package com.ainura.finance_tracker.user.service;
 
-import com.ainura.finance_tracker.user.model.dto.RegisterRequest;
 import com.ainura.finance_tracker.user.model.dto.UserResponse;
 
-public interface UserService {
+import java.util.List;
 
-    UserResponse registerUser(RegisterRequest request);
+public interface UserService {
+    List<UserResponse> getAll();
 
 }
