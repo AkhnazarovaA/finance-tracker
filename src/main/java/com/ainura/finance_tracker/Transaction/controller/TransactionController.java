@@ -5,20 +5,21 @@ import com.ainura.finance_tracker.Transaction.model.dto.expense.TotalExpenseResp
 import com.ainura.finance_tracker.Transaction.model.dto.income.TotalIncomeResponse;
 import com.ainura.finance_tracker.Transaction.model.dto.request.TransactionRequest;
 import com.ainura.finance_tracker.Transaction.model.dto.response.TransactionResponse;
-import com.ainura.finance_tracker.Transaction.model.entity.Transaction;
 import com.ainura.finance_tracker.Transaction.service.TransactionService;
 import com.ainura.finance_tracker.common.MessageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @Tag(name = "Transactions", description = "Transaction management endpoints")
 @RestController
-@RequestMapping("/api/transactions")
+@RequestMapping("/transactions")
 @RequiredArgsConstructor
 public class TransactionController {
 
@@ -32,14 +33,14 @@ public class TransactionController {
 
     @Operation(summary = "Get all transactions")
     @GetMapping
-    public List<Transaction> findAllByOrderByIdAsc() {
-        return transactionService.findAllByOrderByIdAsc();
+    public Page<TransactionResponse> getAll(Pageable pageable) {
+        return transactionService.getAll(pageable);
     }
 
     @Operation(summary = "Get transaction by id")
     @GetMapping("/{id}")
-    public TransactionResponse findTransactionById(@PathVariable("id") Long id) {
-        return transactionService.findTransactionById(id);
+    public TransactionResponse getTransactionById(@PathVariable("id") Long id) {
+        return transactionService.getTransactionById(id);
     }
 
     @Operation(summary = "Update a transaction")
