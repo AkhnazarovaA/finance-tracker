@@ -23,12 +23,12 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
 
     public AuthResponse register(RegisterRequest request) {
-        if (userRepository.existsByEmail(request.email())) {
-            throw new UserException("User with this email already exists");
+        if (userRepository.existsByUsername(request.username())) {
+            throw new UserException("User with this username already exists");
         }
 
         UserEntity user = UserEntity.builder()
-                .userName(request.userName())
+                .username(request.username())
                 .email(request.email())
                 .password(passwordEncoder.encode(request.password()))
                 .userRole(UserRole.USER)
@@ -40,8 +40,8 @@ public class AuthService {
 
     public AuthResponse login(LoginRequest request) {
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.email(), request.password()));
-        UserEntity user = userRepository.findByEmail(request.email()).orElseThrow();
+                new UsernamePasswordAuthenticationToken(request.username(), request.password()));
+        UserEntity user = userRepository.findByUsername(request.username()).orElseThrow();
         return new AuthResponse(jwtService.generateToken(user));
     }
 }
