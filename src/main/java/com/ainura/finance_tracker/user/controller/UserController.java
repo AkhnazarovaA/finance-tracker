@@ -1,24 +1,27 @@
 package com.ainura.finance_tracker.user.controller;
 
-import com.ainura.finance_tracker.user.model.dto.RegisterRequest;
 import com.ainura.finance_tracker.user.model.dto.UserResponse;
 import com.ainura.finance_tracker.user.service.UserService;
-import jakarta.validation.Valid;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
+@Tag(name = "Users", description = "User management endpoints")
 @RestController
-@RequestMapping("/api/register")
+@RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
 
-    @PostMapping
-    public UserResponse registerUser(@Valid @RequestBody RegisterRequest request) {
-       return userService.registerUser(request);
+    @Operation(summary = "Get all users")
+    @GetMapping
+    public List<UserResponse> getAll() {
+       return userService.getAll();
     }
 }
