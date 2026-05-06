@@ -1,10 +1,10 @@
 package com.ainura.finance_tracker.user.service;
 
 import com.ainura.finance_tracker.user.model.dto.UserResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 
 public interface UserService {
-    List<UserResponse> getAll();
-
+    Page<UserResponse> getAll(Pageable pageable);
 }

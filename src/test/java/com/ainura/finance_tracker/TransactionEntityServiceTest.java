@@ -4,7 +4,7 @@ import com.ainura.finance_tracker.Transaction.enums.TransactionType;
 import com.ainura.finance_tracker.Transaction.mapper.TransactionMapper;
 import com.ainura.finance_tracker.Transaction.model.dto.request.TransactionRequest;
 import com.ainura.finance_tracker.Transaction.model.dto.response.TransactionResponse;
-import com.ainura.finance_tracker.Transaction.model.entity.Transaction;
+import com.ainura.finance_tracker.Transaction.model.entity.TransactionEntity;
 import com.ainura.finance_tracker.Transaction.repository.TransactionRepository;
 import com.ainura.finance_tracker.Transaction.service.impl.TransactionServiceImpl;
 import com.ainura.finance_tracker.common.MessageResponse;
@@ -29,7 +29,7 @@ import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
-public class TransactionServiceTest {
+public class TransactionEntityServiceTest {
 
     @Mock
     private TransactionRepository transactionRepository;
@@ -54,7 +54,7 @@ public class TransactionServiceTest {
         request.setTransactionDate(LocalDate.now());
 
         // To mock: when method 'save' is called, return this object
-        when(transactionRepository.save(any(Transaction.class)))
+        when(transactionRepository.save(any(TransactionEntity.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
         // Act (action)
         TransactionResponse response = transactionService.createTransaction(request);
@@ -62,14 +62,14 @@ public class TransactionServiceTest {
         // Assert (check that mapping is success)
         assertThat(response).isInstanceOf(TransactionResponse.class);
         assertThat(response).isNotNull();
-        assertThat(response.getTransactionType()).isEqualTo(TransactionType.INCOME);
-        assertThat(response.getAmount()).isEqualByComparingTo(new BigDecimal(10000.00));
-        assertThat(response.getCategory()).isEqualTo("Bonus");
-        assertThat(response.getDescription()).isEqualTo("Monthly bonus from Bank");
-        assertThat(response.getTransactionDate()).isEqualTo(LocalDate.now());
+        assertThat(response.transactionType()).isEqualTo(TransactionType.INCOME);
+        assertThat(response.amount()).isEqualByComparingTo(new BigDecimal(10000.00));
+        assertThat(response.category()).isEqualTo("Bonus");
+        assertThat(response.description()).isEqualTo("Monthly bonus from Bank");
+        assertThat(response.transactionDate()).isEqualTo(LocalDate.now());
 
         // checking that the method of repository was called 1 time
-        verify(transactionRepository, times(1)).save(any(Transaction.class));
+        verify(transactionRepository, times(1)).save(any(TransactionEntity.class));
     }
 
     @Test

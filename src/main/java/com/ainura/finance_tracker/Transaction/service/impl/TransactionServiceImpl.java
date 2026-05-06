@@ -6,12 +6,14 @@ import com.ainura.finance_tracker.Transaction.model.dto.expense.TotalExpenseResp
 import com.ainura.finance_tracker.Transaction.model.dto.income.TotalIncomeResponse;
 import com.ainura.finance_tracker.Transaction.model.dto.request.TransactionRequest;
 import com.ainura.finance_tracker.Transaction.model.dto.response.TransactionResponse;
-import com.ainura.finance_tracker.Transaction.model.entity.Transaction;
+import com.ainura.finance_tracker.Transaction.model.entity.TransactionEntity;
 import com.ainura.finance_tracker.Transaction.repository.TransactionRepository;
 import com.ainura.finance_tracker.Transaction.service.TransactionService;
 import com.ainura.finance_tracker.common.MessageResponse;
 import com.ainura.finance_tracker.exception.TransactionException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,34 +30,35 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     @Transactional
     public TransactionResponse createTransaction(TransactionRequest request) {
-        Transaction transaction = mapper.toEntity(request);
-        Transaction savedTransaction = transactionRepository.save(transaction);
-        return mapper.toResponse(savedTransaction);
+        TransactionEntity transactionEntity = mapper.toEntity(request);
+        TransactionEntity savedTransactionEntity = transactionRepository.save(transactionEntity);
+        return mapper.toResponse(savedTransactionEntity);
     }
 
     @Override
-    //TODO return here record not entity
-    public List<Transaction> findAllByOrderByIdAsc() {
-        return transactionRepository.findAllByOrderByIdAsc();
+    public Page<TransactionResponse> getAll(Pageable pageable) {
+        return transactionRepository.findAll(pageable)
+                .map(mapper::toResponse);
+
     }
 
     @Override
-    public TransactionResponse findTransactionById(Long id) {
-        Transaction transaction = transactionRepository.findById(id)
+    public TransactionResponse getTransactionById(Long id) {
+        TransactionEntity transactionEntity = transactionRepository.findById(id)
                 .orElseThrow(() ->
                         new TransactionException("Transaction not found with id: " + id));
-        return mapper.toResponse(transaction);
+        return mapper.toResponse(transactionEntity);
     }
 
     @Override
     @Transactional
     public TransactionResponse updateTransaction(Long id, TransactionRequest request) {
-        Transaction transaction = transactionRepository.findById(id)
+        TransactionEntity transactionEntity = transactionRepository.findById(id)
                 .orElseThrow(() -> new TransactionException("Transaction not found with id:  + id"));
 
-        mapper.updateEntityFromRequest(request, transaction);
+        mapper.updateEntityFromRequest(request, transactionEntity);
 
-        Transaction updated = transactionRepository.save(transaction);
+        TransactionEntity updated = transactionRepository.save(transactionEntity);
         return mapper.toResponse(updated);
 
     }
@@ -63,24 +66,24 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     //TODO: RESPONSE TYPE SHOULD EXIST
     public void patchTransaction(Long id, TransactionRequest request) {
-        Transaction transaction = findById(id, request);
+        TransactionEntity transactionEntity = findById(id, request);
 
         if (request.getTransactionType() != null) {
-            transaction.setTransactionType(request.getTransactionType());
+            transactionEntity.setTransactionType(request.getTransactionType());
         }
         if (request.getAmount() != null) {
-            transaction.setAmount(request.getAmount());
+            transactionEntity.setAmount(request.getAmount());
         }
         if (request.getCategory() != null) {
-            transaction.setCategory(request.getCategory());
+            transactionEntity.setCategory(request.getCategory());
         }
         if (request.getDescription() != null) {
-            transaction.setDescription(request.getDescription());
+            transactionEntity.setDescription(request.getDescription());
         }
         if (request.getTransactionDate() != null) {
-            transaction.setTransactionDate(request.getTransactionDate());
+            transactionEntity.setTransactionDate(request.getTransactionDate());
         }
-        transactionRepository.save(transaction);
+        transactionRepository.save(transactionEntity);
 
     }
 
@@ -110,9 +113,9 @@ public class TransactionServiceImpl implements TransactionService {
         return new MessageResponse("Transaction deleted successfully", id);
     }
 
-    private Transaction findById(Long id, TransactionRequest request) {
-        Transaction transaction;
-        return transaction = transactionRepository.findById(id)
+    private TransactionEntity findById(Long id, TransactionRequest request) {
+        TransactionEntity transactionEntity;
+        return transactionEntity = transactionRepository.findById(id)
                 .orElseThrow(() ->
                         new TransactionException("Transaction not found with id: " + id));
     }
