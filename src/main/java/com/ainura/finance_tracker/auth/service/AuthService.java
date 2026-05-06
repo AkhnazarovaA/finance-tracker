@@ -3,6 +3,7 @@ package com.ainura.finance_tracker.auth.service;
 import com.ainura.finance_tracker.auth.dto.AuthResponse;
 import com.ainura.finance_tracker.auth.dto.LoginRequest;
 import com.ainura.finance_tracker.auth.dto.RegisterRequest;
+import com.ainura.finance_tracker.exception.UserException;
 import com.ainura.finance_tracker.user.model.entity.UserEntity;
 import com.ainura.finance_tracker.user.model.enums.UserRole;
 import com.ainura.finance_tracker.user.repository.UserRepository;
@@ -22,11 +23,16 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
 
     public AuthResponse register(RegisterRequest request) {
-        UserEntity user = new UserEntity();
-        user.setUserName(request.userName());
-        user.setEmail(request.email());
-        user.setPassword(passwordEncoder.encode(request.password()));
-        user.setUserRole(UserRole.USER);
+        if (userRepository.existsByEmail(request.email())) {
+            throw new UserException("User with this email already exists");
+        }
+
+        UserEntity user = UserEntity.builder()
+                .userName(request.userName())
+                .email(request.email())
+                .password(passwordEncoder.encode(request.password()))
+                .userRole(UserRole.USER)
+                .build();
         userRepository.save(user);
         return new AuthResponse(jwtService.generateToken(user));
     }
