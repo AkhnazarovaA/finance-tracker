@@ -49,14 +49,11 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     @Transactional
     public TransactionResponse updateTransaction(Long id, TransactionRequest request) {
-        // Step 1: find an old entity from DB
         Transaction transaction = transactionRepository.findById(id)
                 .orElseThrow(() -> new TransactionException("Transaction not found with id:  + id"));
 
-        // Step 2: MapStruct updates fields of 'transaction' FROM request
         mapper.updateEntityFromRequest(request, transaction);
 
-        // Step 3: Save the updated entity
         Transaction updated = transactionRepository.save(transaction);
         return mapper.toResponse(updated);
 
