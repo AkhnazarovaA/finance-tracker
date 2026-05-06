@@ -24,7 +24,7 @@ public class UserEntity implements UserDetails {
     private Long id;
 
     @Column(nullable = false)
-    private String userName;
+    private String username;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -42,11 +42,7 @@ public class UserEntity implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email;
-    }
-
-    public String getDisplayUsername() {
-        return userName;
+        return username;
     }
 
     @Override
