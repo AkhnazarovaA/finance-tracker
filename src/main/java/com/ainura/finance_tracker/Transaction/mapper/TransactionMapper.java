@@ -2,16 +2,16 @@ package com.ainura.finance_tracker.Transaction.mapper;
 
 import com.ainura.finance_tracker.Transaction.model.dto.request.TransactionRequest;
 import com.ainura.finance_tracker.Transaction.model.dto.response.TransactionResponse;
-import com.ainura.finance_tracker.Transaction.model.entity.Transaction;
+import com.ainura.finance_tracker.Transaction.model.entity.TransactionEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface TransactionMapper {
 
-    Transaction toEntity(TransactionRequest request);
+    TransactionEntity toEntity(TransactionRequest request);
 
-    TransactionResponse toResponse(Transaction transaction);
+    TransactionResponse toResponse(TransactionEntity transactionEntity);
 
-    void updateEntityFromRequest(TransactionRequest request, @MappingTarget Transaction entity);
+    void updateEntityFromRequest(TransactionRequest request, @MappingTarget TransactionEntity entity);
 }

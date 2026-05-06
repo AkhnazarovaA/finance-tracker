@@ -5,6 +5,8 @@ import com.ainura.finance_tracker.user.model.dto.UserResponse;
 import com.ainura.finance_tracker.user.repository.UserRepository;
 import com.ainura.finance_tracker.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,11 +19,9 @@ public class UserServiceImpl implements UserService {
     private final UserMapper mapper;
 
     @Override
-    public List<UserResponse> getAll() {
-        return userRepository.findAll()
-                .stream()
-                .map(mapper::toResponse)
-                .toList();
+    public Page<UserResponse> getAll(Pageable pageable) {
+        return userRepository.findAll(pageable)
+                .map(mapper::toResponse);
 
     }
 }

@@ -10,12 +10,12 @@ A Spring boot REST API for tracking income and expenses.
 - Jakarta Validation
 
 ## Features
-- Create transaction
+- Create transactionEntity
 - Get all transactions
-- Get transaction by ID
-- Update transaction
-- Partially update transaction
-- Delete transaction
+- Get transactionEntity by ID
+- Update transactionEntity
+- Partially update transactionEntity
+- Delete transactionEntity
 - Validate request data
 
 ## Project structure
@@ -29,11 +29,11 @@ A Spring boot REST API for tracking income and expenses.
 | Method | Endpoint                | Description                     |
 |---|-------------------------|---------------------------------|
 | GET | `/api/transactions`     | Get all transactions            |
-| GET | `/api/transactions/{id}` | Get transaction by ID           |
-| POST | `/api/transactions`     | Create a transaction            |
-| PUT | `/api/transactions/{id}` | Update a transaction            |
-| PATCH | `/api/transactions/{id}` | Partially update a transaction  |
-| DELETE | `/api/transactions/{id}` | Delete a transaction |
+| GET | `/api/transactions/{id}` | Get transactionEntity by ID           |
+| POST | `/api/transactions`     | Create a transactionEntity            |
+| PUT | `/api/transactions/{id}` | Update a transactionEntity            |
+| PATCH | `/api/transactions/{id}` | Partially update a transactionEntity  |
+| DELETE | `/api/transactions/{id}` | Delete a transactionEntity |
 
 ## Example request
 ```json

@@ -1,6 +1,6 @@
 package com.ainura.finance_tracker.Item.model.entity;
 
-import com.ainura.finance_tracker.Transaction.model.entity.Transaction;
+import com.ainura.finance_tracker.Transaction.model.entity.TransactionEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,6 +31,7 @@ public class Item {
     private Integer quantity;
 
     @ManyToOne
-    private Transaction transaction;
+    @JoinColumn(name = "transaction_id")
+    private TransactionEntity transactionEntity;
 
 }
