@@ -2,6 +2,7 @@ package com.ainura.finance_tracker.Transaction.repository;
 
 import com.ainura.finance_tracker.Transaction.model.dto.expense.ExpenseByCategory;
 import com.ainura.finance_tracker.Transaction.model.entity.TransactionEntity;
+import com.ainura.finance_tracker.user.model.entity.UserEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,8 +14,6 @@ import java.util.List;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<TransactionEntity, Long> {
-
-    Page<TransactionEntity> findAll(Pageable pageable);
 
     @Query(
             value = "SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE transaction_type = 'EXPENSE'",
@@ -37,6 +36,8 @@ public interface TransactionRepository extends JpaRepository<TransactionEntity, 
             nativeQuery = true
     )
     List<ExpenseByCategory> getExpenseByCategory();
+
+    Page <TransactionEntity> findAllByUser(UserEntity user, Pageable pageable);
 
 
 }

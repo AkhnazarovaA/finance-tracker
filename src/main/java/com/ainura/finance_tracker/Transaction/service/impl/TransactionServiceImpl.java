@@ -11,9 +11,12 @@ import com.ainura.finance_tracker.Transaction.repository.TransactionRepository;
 import com.ainura.finance_tracker.Transaction.service.TransactionService;
 import com.ainura.finance_tracker.common.MessageResponse;
 import com.ainura.finance_tracker.exception.TransactionException;
+import com.ainura.finance_tracker.user.model.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,14 +33,19 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     @Transactional
     public TransactionResponse createTransaction(TransactionRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserEntity userEntity = (UserEntity) authentication.getPrincipal();
         TransactionEntity transactionEntity = mapper.toEntity(request);
+        transactionEntity.setUser(userEntity);
         TransactionEntity savedTransactionEntity = transactionRepository.save(transactionEntity);
         return mapper.toResponse(savedTransactionEntity);
     }
 
     @Override
     public Page<TransactionResponse> getAll(Pageable pageable) {
-        return transactionRepository.findAll(pageable)
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserEntity userEntity = (UserEntity) authentication.getPrincipal();
+        return transactionRepository.findAllByUser(userEntity, pageable)
                 .map(mapper::toResponse);
 
     }

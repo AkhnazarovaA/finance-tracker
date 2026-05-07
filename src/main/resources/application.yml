@@ -7,18 +7,16 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
-
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
   data:
     web:
       pageable:
         default-page-size: 10
         max-page-size: 100
 
-
-    jpa:
-      hibernate:
-        ddl-auto: update
-      show-sql: true
 
 jwt:
   secret: ${JWT_SECRET}
