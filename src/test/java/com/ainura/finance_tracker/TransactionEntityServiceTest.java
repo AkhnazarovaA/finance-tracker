@@ -1,12 +1,12 @@
 package com.ainura.finance_tracker;
 
-import com.ainura.finance_tracker.Transaction.enums.TransactionType;
-import com.ainura.finance_tracker.Transaction.mapper.TransactionMapper;
-import com.ainura.finance_tracker.Transaction.model.dto.request.TransactionRequest;
-import com.ainura.finance_tracker.Transaction.model.dto.response.TransactionResponse;
-import com.ainura.finance_tracker.Transaction.model.entity.TransactionEntity;
-import com.ainura.finance_tracker.Transaction.repository.TransactionRepository;
-import com.ainura.finance_tracker.Transaction.service.impl.TransactionServiceImpl;
+import com.ainura.finance_tracker.transaction.enums.TransactionType;
+import com.ainura.finance_tracker.transaction.mapper.TransactionMapper;
+import com.ainura.finance_tracker.transaction.model.dto.request.TransactionRequest;
+import com.ainura.finance_tracker.transaction.model.dto.response.TransactionResponse;
+import com.ainura.finance_tracker.transaction.model.entity.TransactionEntity;
+import com.ainura.finance_tracker.transaction.repository.TransactionRepository;
+import com.ainura.finance_tracker.transaction.service.impl.TransactionServiceImpl;
 import com.ainura.finance_tracker.common.MessageResponse;
 import com.ainura.finance_tracker.exception.TransactionException;
 import org.junit.jupiter.api.BeforeEach;
