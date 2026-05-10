@@ -1,0 +1,43 @@
+package com.ainura.finance_tracker.transaction.repository;
+
+import com.ainura.finance_tracker.transaction.model.dto.expense.ExpenseByCategory;
+import com.ainura.finance_tracker.transaction.model.entity.TransactionEntity;
+import com.ainura.finance_tracker.user.model.entity.UserEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+@Repository
+public interface TransactionRepository extends JpaRepository<TransactionEntity, Long> {
+
+    @Query(
+            value = "SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE transaction_type = 'EXPENSE'",
+            nativeQuery = true
+    )
+    BigDecimal getTotalExpense();
+
+    @Query(
+            value = "SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE transaction_type = 'INCOME'",
+            nativeQuery = true
+
+    )
+    BigDecimal getTotalIncome();
+
+    @Query(
+            value = "SELECT category, COALESCE(SUM(amount),0) AS totalAmount " +
+                    "FROM transactions " +
+                    "WHERE transaction_type = 'EXPENSE' " +
+                    "GROUP BY category",
+            nativeQuery = true
+    )
+    List<ExpenseByCategory> getExpenseByCategory();
+
+    Page <TransactionEntity> findAllByUser(UserEntity user, Pageable pageable);
+
+
+}

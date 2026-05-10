@@ -3,14 +3,15 @@ package com.ainura.finance_tracker.auth.service;
 import com.ainura.finance_tracker.auth.dto.AuthResponse;
 import com.ainura.finance_tracker.auth.dto.LoginRequest;
 import com.ainura.finance_tracker.auth.dto.RegisterRequest;
+import com.ainura.finance_tracker.auth.model.SecurityUser;
 import com.ainura.finance_tracker.exception.UserException;
 import com.ainura.finance_tracker.user.model.entity.UserEntity;
 import com.ainura.finance_tracker.user.model.enums.UserRole;
-import com.ainura.finance_tracker.user.repository.UserRepository;
 import com.ainura.finance_tracker.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +19,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final UserRepository userRepository;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
@@ -36,14 +36,19 @@ public class AuthService {
                 .userRole(UserRole.USER)
                 .build();
         userService.save(user);
-        return new AuthResponse(jwtService.generateToken(user));
+        return new AuthResponse(jwtService.generateToken(new SecurityUser(user)));
     }
 
+
+    public UserEntity getCurrentUser() {
+        SecurityUser securityUser = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return securityUser.getUser();
+    }
 
     public AuthResponse login(LoginRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.username(), request.password()));
         UserEntity user = userService.findByUsername(request.username());
-        return new AuthResponse(jwtService.generateToken(user));
+        return new AuthResponse(jwtService.generateToken(new SecurityUser(user)));
     }
 }
