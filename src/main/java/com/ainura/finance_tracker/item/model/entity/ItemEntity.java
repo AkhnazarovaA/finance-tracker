@@ -18,7 +18,8 @@ import java.math.BigDecimal;
 public class ItemEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "item_seq")
+    @SequenceGenerator(name = "item_seq", sequenceName = "item_sequence", allocationSize = 1)
     private Long id;
 
     @Column(nullable = false)
@@ -30,8 +31,8 @@ public class ItemEntity {
     @Column(nullable = false)
     private Integer quantity;
 
-    @ManyToOne
-    @JoinColumn(name = "transaction_id")
-    private TransactionEntity transactionEntity;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "transaction_id", nullable = false)
+    private TransactionEntity transaction;
 
 }
