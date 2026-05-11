@@ -51,7 +51,8 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public TransactionResponse getTransactionById(Long id) {
-        TransactionEntity transactionEntity = transactionRepository.findById(id)
+        UserEntity currentUser = authService.getCurrentUser();
+        TransactionEntity transactionEntity = transactionRepository.findByIdAndUser(id, currentUser)
                 .orElseThrow(() ->
                         new TransactionException("Transaction not found with id: " + id));
         return mapper.toResponse(transactionEntity);
