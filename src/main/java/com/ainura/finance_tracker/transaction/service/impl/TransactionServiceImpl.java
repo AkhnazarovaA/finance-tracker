@@ -5,7 +5,9 @@ import com.ainura.finance_tracker.transaction.mapper.TransactionMapper;
 import com.ainura.finance_tracker.transaction.model.dto.expense.ExpenseByCategory;
 import com.ainura.finance_tracker.transaction.model.dto.expense.TotalExpenseResponse;
 import com.ainura.finance_tracker.transaction.model.dto.income.TotalIncomeResponse;
-import com.ainura.finance_tracker.transaction.model.dto.request.TransactionRequest;
+import com.ainura.finance_tracker.transaction.model.dto.request.TransactionPatchRequest;
+import com.ainura.finance_tracker.transaction.model.dto.request.TransactionCreateRequest;
+import com.ainura.finance_tracker.transaction.model.dto.request.TransactionUpdateRequest;
 import com.ainura.finance_tracker.transaction.model.dto.response.TransactionResponse;
 import com.ainura.finance_tracker.transaction.model.entity.TransactionEntity;
 import com.ainura.finance_tracker.transaction.repository.TransactionRepository;
@@ -32,7 +34,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     @Transactional
-    public TransactionResponse createTransaction(TransactionRequest request) {
+    public TransactionResponse createTransaction(TransactionCreateRequest request) {
         UserEntity userEntity = authService.getCurrentUser();
         TransactionEntity transactionEntity = mapper.toEntity(request);
         transactionEntity.setUser(userEntity);
@@ -57,7 +59,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     @Transactional
-    public TransactionResponse updateTransaction(Long id, TransactionRequest request) {
+    public TransactionResponse updateTransaction(Long id, TransactionUpdateRequest request) {
         TransactionEntity transactionEntity = transactionRepository.findById(id)
                 .orElseThrow(() -> new TransactionException("Transaction not found with id:  + id"));
 
@@ -69,26 +71,26 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    //TODO: RESPONSE TYPE SHOULD EXIST
-    public void patchTransaction(Long id, TransactionRequest request) {
+    public MessageResponse patchTransaction(Long id, TransactionPatchRequest request) {
         TransactionEntity transactionEntity = findById(id, request);
 
-        if (request.getTransactionType() != null) {
-            transactionEntity.setTransactionType(request.getTransactionType());
+        if (request.transactionType() != null) {
+            transactionEntity.setTransactionType(request.transactionType());
         }
-        if (request.getAmount() != null) {
-            transactionEntity.setAmount(request.getAmount());
+        if (request.amount() != null) {
+            transactionEntity.setAmount(request.amount());
         }
-        if (request.getCategory() != null) {
-            transactionEntity.setCategory(request.getCategory());
+        if (request.category() != null) {
+            transactionEntity.setCategory(request.category());
         }
-        if (request.getDescription() != null) {
-            transactionEntity.setDescription(request.getDescription());
+        if (request.description() != null) {
+            transactionEntity.setDescription(request.description());
         }
-        if (request.getTransactionDate() != null) {
-            transactionEntity.setTransactionDate(request.getTransactionDate());
+        if (request.transactionDate() != null) {
+            transactionEntity.setTransactionDate(request.transactionDate());
         }
         transactionRepository.save(transactionEntity);
+        return new MessageResponse("Transaction has been updated successfully", id);
 
     }
 
@@ -118,7 +120,7 @@ public class TransactionServiceImpl implements TransactionService {
         return new MessageResponse("Transaction deleted successfully", id);
     }
 
-    private TransactionEntity findById(Long id, TransactionRequest request) {
+    private TransactionEntity findById(Long id, TransactionPatchRequest request) {
         TransactionEntity transactionEntity;
         return transactionEntity = transactionRepository.findById(id)
                 .orElseThrow(() ->
