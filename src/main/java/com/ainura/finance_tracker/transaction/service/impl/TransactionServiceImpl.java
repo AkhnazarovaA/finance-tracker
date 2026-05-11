@@ -72,7 +72,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public MessageResponse patchTransaction(Long id, TransactionPatchRequest request) {
-        TransactionEntity transactionEntity = findById(id, request);
+        TransactionEntity transactionEntity = findById(id);
 
         if (request.transactionType() != null) {
             transactionEntity.setTransactionType(request.transactionType());
@@ -120,9 +120,8 @@ public class TransactionServiceImpl implements TransactionService {
         return new MessageResponse("Transaction deleted successfully", id);
     }
 
-    private TransactionEntity findById(Long id, TransactionPatchRequest request) {
-        TransactionEntity transactionEntity;
-        return transactionEntity = transactionRepository.findById(id)
+    private TransactionEntity findById(Long id) {
+        return transactionRepository.findById(id)
                 .orElseThrow(() ->
                         new TransactionException("Transaction not found with id: " + id));
     }
