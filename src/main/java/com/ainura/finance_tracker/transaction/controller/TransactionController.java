@@ -3,7 +3,9 @@ package com.ainura.finance_tracker.transaction.controller;
 import com.ainura.finance_tracker.transaction.model.dto.expense.ExpenseByCategory;
 import com.ainura.finance_tracker.transaction.model.dto.expense.TotalExpenseResponse;
 import com.ainura.finance_tracker.transaction.model.dto.income.TotalIncomeResponse;
-import com.ainura.finance_tracker.transaction.model.dto.request.TransactionRequest;
+import com.ainura.finance_tracker.transaction.model.dto.request.TransactionCreateRequest;
+import com.ainura.finance_tracker.transaction.model.dto.request.TransactionPatchRequest;
+import com.ainura.finance_tracker.transaction.model.dto.request.TransactionUpdateRequest;
 import com.ainura.finance_tracker.transaction.model.dto.response.TransactionResponse;
 import com.ainura.finance_tracker.transaction.service.TransactionService;
 import com.ainura.finance_tracker.common.MessageResponse;
@@ -27,7 +29,7 @@ public class TransactionController {
 
     @Operation(summary = "Create a transaction")
     @PostMapping()
-    public TransactionResponse createTransaction(@Valid @RequestBody TransactionRequest request) {
+    public TransactionResponse createTransaction(@Valid @RequestBody TransactionCreateRequest request) {
         return transactionService.createTransaction(request);
     }
 
@@ -45,14 +47,14 @@ public class TransactionController {
 
     @Operation(summary = "Update a transaction")
     @PutMapping("/{id}")
-    public TransactionResponse updateTransaction(@PathVariable Long id, @Valid @RequestBody TransactionRequest request) {
+    public TransactionResponse updateTransaction(@PathVariable Long id, @Valid @RequestBody TransactionUpdateRequest request) {
         return transactionService.updateTransaction(id, request);
     }
 
     @Operation(summary = "Partially update a transaction")
     @PatchMapping("/{id}")
-    public void patchTransaction(@PathVariable Long id, @Valid @RequestBody TransactionRequest request) {
-        transactionService.patchTransaction(id, request);
+    public MessageResponse patchTransaction(@PathVariable Long id, @RequestBody TransactionPatchRequest request) {
+        return transactionService.patchTransaction(id, request);
     }
 
     @Operation(summary = "Get total expenses")
