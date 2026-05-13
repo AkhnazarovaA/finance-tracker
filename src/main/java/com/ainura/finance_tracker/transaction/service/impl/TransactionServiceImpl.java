@@ -1,6 +1,7 @@
 package com.ainura.finance_tracker.transaction.service.impl;
 
 import com.ainura.finance_tracker.auth.service.AuthService;
+import com.ainura.finance_tracker.transaction.enums.TransactionType;
 import com.ainura.finance_tracker.transaction.mapper.TransactionMapper;
 import com.ainura.finance_tracker.transaction.model.dto.expense.ExpenseByCategory;
 import com.ainura.finance_tracker.transaction.model.dto.expense.TotalExpenseResponse;
@@ -51,21 +52,15 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public TransactionResponse getTransactionById(Long id) {
-        UserEntity currentUser = authService.getCurrentUser();
-        TransactionEntity transactionEntity = transactionRepository.findByIdAndUser(id, currentUser)
-                .orElseThrow(() ->
-                        new TransactionException("Transaction not found with id: " + id));
+        TransactionEntity transactionEntity = findByIdAndUser(id);
         return mapper.toResponse(transactionEntity);
     }
 
     @Override
     @Transactional
     public TransactionResponse updateTransaction(Long id, TransactionUpdateRequest request) {
-        TransactionEntity transactionEntity = transactionRepository.findById(id)
-                .orElseThrow(() -> new TransactionException("Transaction not found with id:  + id"));
-
+        TransactionEntity transactionEntity = findByIdAndUser(id);
         mapper.updateEntityFromRequest(request, transactionEntity);
-
         TransactionEntity updated = transactionRepository.save(transactionEntity);
         return mapper.toResponse(updated);
 
@@ -73,7 +68,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public MessageResponse patchTransaction(Long id, TransactionPatchRequest request) {
-        TransactionEntity transactionEntity = findById(id);
+        TransactionEntity transactionEntity = findByIdAndUser(id);
 
         if (request.transactionType() != null) {
             transactionEntity.setTransactionType(request.transactionType());
@@ -97,32 +92,34 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public TotalExpenseResponse getTotalExpense() {
-        BigDecimal totalAmount = transactionRepository.getTotalExpense();
+        UserEntity currentUser = authService.getCurrentUser();
+        BigDecimal totalAmount = transactionRepository.getTotalExpense(currentUser);
         return new TotalExpenseResponse(totalAmount);
     }
 
     @Override
     public TotalIncomeResponse getTotalIncome() {
-        BigDecimal totalAmount = transactionRepository.getTotalIncome();
+        UserEntity currentUser = authService.getCurrentUser();
+        BigDecimal totalAmount = transactionRepository.getTotalIncome(currentUser);
         return new TotalIncomeResponse(totalAmount);
     }
 
     @Override
     public List<ExpenseByCategory> getExpenseByCategory() {
-        return transactionRepository.getExpenseByCategory();
+        UserEntity currentUser = authService.getCurrentUser();
+        return transactionRepository.getExpenseByCategory(TransactionType.EXPENSE, currentUser);
     }
 
     @Override
     public MessageResponse deleteTransaction(Long id) {
-        if (!transactionRepository.existsById(id)) {
-            throw new TransactionException("Transaction not found");
-        }
-        transactionRepository.deleteById(id);
+        TransactionEntity byIdAndUser = findByIdAndUser(id);
+        transactionRepository.delete(byIdAndUser);
         return new MessageResponse("Transaction deleted successfully", id);
     }
 
-    private TransactionEntity findById(Long id) {
-        return transactionRepository.findById(id)
+    private TransactionEntity findByIdAndUser(Long id) {
+        UserEntity currentUser = authService.getCurrentUser();
+        return transactionRepository.findByIdAndUser(id, currentUser)
                 .orElseThrow(() ->
                         new TransactionException("Transaction not found with id: " + id));
     }
