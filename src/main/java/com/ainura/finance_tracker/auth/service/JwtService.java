@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -17,6 +18,8 @@ public class JwtService {
 
     @Value("${jwt.secret}")
     private String secret;
+
+    private SecretKey signingKey;
 
     @Value("${jwt.expiration}")
     private long expiration;
@@ -53,8 +56,13 @@ public class JwtService {
         return resolver.apply(claims);
     }
 
-    private SecretKey getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(this.secret);
-        return Keys.hmacShaKeyFor(keyBytes);
+    @PostConstruct
+    private void init() {
+        this.signingKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
     }
+
+    private SecretKey getSigningKey() {
+        return signingKey;
+    }
+
 }
