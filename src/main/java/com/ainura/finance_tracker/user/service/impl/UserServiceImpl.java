@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +20,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper mapper;
 
     @Override
+    @Transactional(readOnly = true)
     public Page<UserResponse> getAll(Pageable pageable) {
         return userRepository.findAll(pageable)
                 .map(mapper::toResponse);
@@ -26,16 +28,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserEntity findByUsername(String username) {
         return userRepository.findByUsername(username).orElseThrow(() -> new UserException("User not found"));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean existsByUsername(String username) {
         return userRepository.existsByUsername(username);
     }
 
     @Override
+    @Transactional
     public UserEntity save(UserEntity user) {
         return userRepository.save(user);
     }

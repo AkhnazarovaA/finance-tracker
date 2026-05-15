@@ -44,6 +44,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<TransactionResponse> getAll(Pageable pageable) {
         UserEntity userEntity = authService.getCurrentUser();
         return transactionRepository.findAllByUser(userEntity, pageable)
@@ -51,6 +52,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public TransactionResponse getTransactionById(Long id) {
         TransactionEntity transactionEntity = findByIdAndUser(id);
         return mapper.toResponse(transactionEntity);
@@ -67,6 +69,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
+    @Transactional
     public MessageResponse patchTransaction(Long id, TransactionPatchRequest request) {
         TransactionEntity transactionEntity = findByIdAndUser(id);
 
@@ -91,6 +94,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public TotalExpenseResponse getTotalExpense() {
         UserEntity currentUser = authService.getCurrentUser();
         BigDecimal totalAmount = transactionRepository.getTotalExpense(currentUser);
@@ -98,6 +102,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public TotalIncomeResponse getTotalIncome() {
         UserEntity currentUser = authService.getCurrentUser();
         BigDecimal totalAmount = transactionRepository.getTotalIncome(currentUser);
@@ -105,12 +110,14 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ExpenseByCategory> getExpenseByCategory() {
         UserEntity currentUser = authService.getCurrentUser();
         return transactionRepository.getExpenseByCategory(TransactionType.EXPENSE, currentUser);
     }
 
     @Override
+    @Transactional
     public MessageResponse deleteTransaction(Long id) {
         TransactionEntity byIdAndUser = findByIdAndUser(id);
         transactionRepository.delete(byIdAndUser);

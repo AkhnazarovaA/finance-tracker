@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
@@ -18,6 +19,7 @@ public class ItemServiceImpl implements ItemService {
     private final ItemMapper mapper;
 
     @Override
+    @Transactional(readOnly = true)
     public Page<ItemResponse> getItems(Pageable pageable) {
         return itemRepository.findAll(pageable).map(mapper::toResponse);
     }
