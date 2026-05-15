@@ -11,6 +11,7 @@ import com.ainura.finance_tracker.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -46,9 +47,9 @@ public class AuthService {
     }
 
     public AuthResponse login(LoginRequest request) {
-        authenticationManager.authenticate(
+        Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.username(), request.password()));
-        UserEntity user = userService.findByUsername(request.username());
-        return new AuthResponse(jwtService.generateToken(new SecurityUser(user)));
+        SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
+        return new AuthResponse(jwtService.generateToken(securityUser));
     }
 }
