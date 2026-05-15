@@ -3,6 +3,7 @@ package com.ainura.finance_tracker.auth.service;
 import com.ainura.finance_tracker.auth.model.SecurityUser;
 import com.ainura.finance_tracker.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,6 +16,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository repository;
 
     @Override
+    @Cacheable(value = "userDetails", key = "#username")
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return repository.findByUsername(username)
                 .map(SecurityUser::new)
