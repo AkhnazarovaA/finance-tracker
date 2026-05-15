@@ -19,7 +19,7 @@ public class ItemEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "item_seq")
-    @SequenceGenerator(name = "item_seq", sequenceName = "item_sequence", allocationSize = 1)
+    @SequenceGenerator(name = "item_seq", sequenceName = "item_sequence", allocationSize = 50)
     private Long id;
 
     @Column(nullable = false)
