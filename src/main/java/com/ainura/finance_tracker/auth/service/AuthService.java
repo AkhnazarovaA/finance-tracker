@@ -15,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +26,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
 
+    @Transactional
     public AuthResponse register(RegisterRequest request) {
         if (userService.existsByUsername(request.username())) {
             throw new UserException("User with this username already exists");
@@ -39,7 +41,6 @@ public class AuthService {
         userService.save(user);
         return new AuthResponse(jwtService.generateToken(new SecurityUser(user)));
     }
-
 
     public UserEntity getCurrentUser() {
         SecurityUser securityUser = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
