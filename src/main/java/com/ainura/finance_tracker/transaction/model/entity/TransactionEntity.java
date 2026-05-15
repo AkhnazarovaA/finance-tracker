@@ -27,7 +27,7 @@ public class TransactionEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "trans_seq")
-    @SequenceGenerator(name = "trans_seq", sequenceName = "transaction_sequence", allocationSize = 1)
+    @SequenceGenerator(name = "trans_seq", sequenceName = "transaction_sequence", allocationSize = 50)
     private Long id;
 
     @Enumerated(EnumType.STRING)

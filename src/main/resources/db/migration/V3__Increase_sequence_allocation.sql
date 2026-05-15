@@ -1,0 +1,3 @@
+ALTER SEQUENCE user_sequence INCREMENT BY 50;
+ALTER SEQUENCE transaction_sequence INCREMENT BY 50;
+ALTER SEQUENCE item_sequence INCREMENT BY 50;
