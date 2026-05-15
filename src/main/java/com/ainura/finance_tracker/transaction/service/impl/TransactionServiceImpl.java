@@ -54,14 +54,14 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     @Transactional(readOnly = true)
     public TransactionResponse getTransactionById(Long id) {
-        TransactionEntity transactionEntity = findByIdAndUser(id);
+        TransactionEntity transactionEntity = getTransactionForCurrentUser(id);
         return mapper.toResponse(transactionEntity);
     }
 
     @Override
     @Transactional
     public TransactionResponse updateTransaction(Long id, TransactionUpdateRequest request) {
-        TransactionEntity transactionEntity = findByIdAndUser(id);
+        TransactionEntity transactionEntity = getTransactionForCurrentUser(id);
         mapper.updateEntityFromRequest(request, transactionEntity);
         TransactionEntity updated = transactionRepository.save(transactionEntity);
         return mapper.toResponse(updated);
@@ -71,7 +71,7 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     @Transactional
     public MessageResponse patchTransaction(Long id, TransactionPatchRequest request) {
-        TransactionEntity transactionEntity = findByIdAndUser(id);
+        TransactionEntity transactionEntity = getTransactionForCurrentUser(id);
 
         if (request.transactionType() != null) {
             transactionEntity.setTransactionType(request.transactionType());
@@ -119,12 +119,12 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     @Transactional
     public MessageResponse deleteTransaction(Long id) {
-        TransactionEntity byIdAndUser = findByIdAndUser(id);
+        TransactionEntity byIdAndUser = getTransactionForCurrentUser(id);
         transactionRepository.delete(byIdAndUser);
         return new MessageResponse("Transaction deleted successfully", id);
     }
 
-    private TransactionEntity findByIdAndUser(Long id) {
+    public TransactionEntity getTransactionForCurrentUser(Long id) {
         UserEntity currentUser = authService.getCurrentUser();
         return transactionRepository.findByIdAndUser(id, currentUser)
                 .orElseThrow(() ->

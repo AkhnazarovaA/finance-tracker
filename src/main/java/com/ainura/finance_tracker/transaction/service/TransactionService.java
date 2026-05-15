@@ -8,6 +8,7 @@ import com.ainura.finance_tracker.transaction.model.dto.request.TransactionPatch
 import com.ainura.finance_tracker.transaction.model.dto.request.TransactionUpdateRequest;
 import com.ainura.finance_tracker.transaction.model.dto.response.TransactionResponse;
 import com.ainura.finance_tracker.common.MessageResponse;
+import com.ainura.finance_tracker.transaction.model.entity.TransactionEntity;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,5 +26,6 @@ public interface TransactionService {
     TotalExpenseResponse getTotalExpense();
     TotalIncomeResponse getTotalIncome();
     List<ExpenseByCategory> getExpenseByCategory();
+    TransactionEntity getTransactionForCurrentUser(Long id);
 
 }

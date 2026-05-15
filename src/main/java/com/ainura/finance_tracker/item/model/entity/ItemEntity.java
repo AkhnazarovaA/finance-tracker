@@ -2,10 +2,7 @@ package com.ainura.finance_tracker.item.model.entity;
 
 import com.ainura.finance_tracker.transaction.model.entity.TransactionEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 
@@ -15,6 +12,7 @@ import java.math.BigDecimal;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class ItemEntity {
 
     @Id
