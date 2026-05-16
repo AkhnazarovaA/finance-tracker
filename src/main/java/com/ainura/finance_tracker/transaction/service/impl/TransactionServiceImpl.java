@@ -1,6 +1,8 @@
 package com.ainura.finance_tracker.transaction.service.impl;
 
 import com.ainura.finance_tracker.auth.service.AuthService;
+import com.ainura.finance_tracker.kafka.dto.TransactionCreatedEvent;
+import com.ainura.finance_tracker.kafka.service.TransactionEventProducer;
 import com.ainura.finance_tracker.transaction.enums.TransactionType;
 import com.ainura.finance_tracker.transaction.mapper.TransactionMapper;
 import com.ainura.finance_tracker.transaction.model.dto.expense.ExpenseByCategory;
@@ -32,6 +34,7 @@ public class TransactionServiceImpl implements TransactionService {
     private final TransactionRepository transactionRepository;
     private final TransactionMapper mapper;
     private final AuthService authService;
+    private final TransactionEventProducer transactionEventProducer;
 
     @Override
     @Transactional
@@ -39,8 +42,19 @@ public class TransactionServiceImpl implements TransactionService {
         UserEntity userEntity = authService.getCurrentUser();
         TransactionEntity transactionEntity = mapper.toEntity(request);
         transactionEntity.setUser(userEntity);
-        TransactionEntity savedTransactionEntity = transactionRepository.save(transactionEntity);
-        return mapper.toResponse(savedTransactionEntity);
+        TransactionEntity saved = transactionRepository.save(transactionEntity);
+        transactionEventProducer.sendTransactionCreated(
+                new TransactionCreatedEvent(
+                        saved.getId(),
+                        saved.getUser().getId(),
+                        saved.getTransactionType().name(),
+                        saved.getAmount(),
+                        saved.getCategory(),
+                        saved.getTransactionDate()
+                )
+        );
+
+        return mapper.toResponse(saved);
     }
 
     @Override

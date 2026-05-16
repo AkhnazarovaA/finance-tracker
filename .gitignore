@@ -41,3 +41,6 @@ Thumbs.db
 # Environment files
 .env
 .env.*
+
+#Ignore local Claude code tools, hooks, and local settings
+.claude/
